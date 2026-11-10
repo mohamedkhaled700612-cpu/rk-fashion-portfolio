@@ -1,0 +1,50 @@
+:root { --ox: #240810; --gar: #3d0c1b; --cla: #5e1229; --gold: #c9a24b; --gold2: #e3cb8f; --cream: #f3e2ce; --ivory: #f5ecdf; }
+* { box-sizing: border-box; }
+html { background: #14040a; }
+body { margin: 0; font-family: "Montserrat", system-ui, sans-serif; color: #3d0c1b; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+[dir="rtl"] body, html[lang="ar"] body { font-family: "Cairo", system-ui, sans-serif; }
+.bar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; padding: .8rem 1.2rem; background: var(--ox); color: var(--ivory); border-bottom: 1px solid rgba(201,162,75,.4); }
+.bar__back { color: var(--gold2); text-decoration: none; font-size: .8rem; }
+.bar__hint { flex: 1; font-size: .78rem; color: #c7aaac; }
+.bar__save { font: inherit; font-size: .78rem; letter-spacing: .12em; padding: .7rem 1.4rem; background: var(--gold); color: var(--ox); border: 0; cursor: pointer; }
+.bar__save:disabled { opacity: .5; cursor: wait; }
+.state { color: var(--ivory); text-align: center; padding: 3rem 1rem; }
+.state[hidden] { display: none; }
+#book { display: grid; gap: 1.5rem; padding: 1.5rem 0 3rem; justify-items: center; }
+
+/* each page is a true A4 sheet */
+.pg { position: relative; width: 210mm; max-width: 100%; aspect-ratio: 210 / 297; background: radial-gradient(120% 100% at 50% 0, #fbf3e6, #eadbc3); overflow: hidden; box-shadow: 0 14px 50px rgba(0,0,0,.5); display: flex; flex-direction: column; padding: 14mm 15mm 16mm; page-break-after: always; break-after: page; }
+.pg::before { content: ""; position: absolute; inset: 7mm; border: .3mm solid rgba(201,162,75,.65); pointer-events: none; }
+.frame { flex: 1; min-height: 0; background: #fff; padding: 3mm; box-shadow: 0 0 0 .3mm rgba(201,162,75,.5), 0 3mm 8mm rgba(60,20,20,.2); }
+.frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.meta { display: flex; gap: 6mm; align-items: flex-start; padding: 7mm 2mm 4mm; }
+.meta__no { font-family: "Cormorant Garamond", Georgia, serif; font-size: 30pt; line-height: .9; color: rgba(201,162,75,.85); direction: ltr; }
+.meta__cat { display: block; font-size: 7pt; letter-spacing: .3em; text-transform: uppercase; color: #8a6a28; margin-bottom: 1.5mm; }
+[lang="ar"] .meta__cat { letter-spacing: 0; text-transform: none; font-size: 9pt; }
+.meta h2 { margin: 0 0 2mm; font-family: "Cormorant Garamond", Georgia, serif; font-weight: 500; font-size: 22pt; line-height: 1.05; }
+[lang="ar"] .meta h2 { font-family: "Amiri", serif; }
+.meta p { margin: 0; font-size: 9pt; line-height: 1.6; color: #5a3a3e; }
+.pg__no { position: absolute; bottom: 10mm; inset-inline: 0; text-align: center; font-size: 7pt; letter-spacing: .3em; color: #8a6a28; direction: ltr; }
+
+.pg--cover, .pg--end { background: linear-gradient(140deg, var(--cla), var(--gar) 55%, #2a0812); color: var(--ivory); justify-content: center; align-items: center; text-align: center; }
+.pg--cover::before, .pg--end::before { border-color: rgba(201,162,75,.6); }
+.cover, .end { display: flex; flex-direction: column; align-items: center; gap: 9mm; }
+.cover__k { font-size: 9pt; letter-spacing: .55em; text-transform: uppercase; color: var(--gold2); }
+[lang="ar"] .cover__k { letter-spacing: 0; text-transform: none; font-size: 12pt; }
+.cover__plate { overflow: hidden; width: 80mm; height: 80mm; border-radius: 50%; background: var(--cream); display: grid; place-items: center; box-shadow: 0 0 0 1.2mm var(--gar), 0 0 0 1.7mm var(--gold); }
+.cover__plate img { width: 92%; height: 92%; object-fit: contain; }
+.cover__n { margin: 0; font-family: "Cormorant Garamond", Georgia, serif; font-weight: 500; font-size: 30pt; color: var(--gold2); letter-spacing: .05em; }
+.cover__s { font-size: 8pt; letter-spacing: .5em; color: #c7aaac; }
+.end__logo { width: 42mm; height: 42mm; border-radius: 50%; background: var(--cream); }
+.end h2 { margin: 0; font-family: "Cormorant Garamond", Georgia, serif; font-weight: 500; font-size: 24pt; color: var(--gold2); }
+[lang="ar"] .end h2 { font-family: "Amiri", serif; }
+.end__l { margin: 0; font-size: 11pt; }
+
+@page { size: A4; margin: 0; }
+@media print {
+  html, body { background: #fff; }
+  .no-print { display: none !important; }
+  #book { display: block; padding: 0; }
+  .pg { width: 210mm; height: 297mm; max-width: none; aspect-ratio: auto; box-shadow: none; margin: 0; }
+}
+@media (max-width: 800px) { .pg { padding: 6% 7% 8%; } .meta h2 { font-size: 5vw; } .meta p { font-size: 2.4vw; } .meta__no { font-size: 8vw; } }

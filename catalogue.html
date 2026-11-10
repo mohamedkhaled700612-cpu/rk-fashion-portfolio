@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>RK FASHION — Catalogue</title>
+  <link rel="icon" type="image/png" href="assets/logo/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600&family=Montserrat:wght@300;400;500&display=swap">
+  <link rel="stylesheet" href="css/catalogue.css">
+</head>
+<body>
+  <header class="bar no-print">
+    <a class="bar__back" id="back" href="index.html" data-i18n="cat.back">Back to site</a>
+    <span class="bar__hint" id="hint" data-i18n="cat.hint"></span>
+    <button type="button" class="bar__save" id="save" data-i18n="cat.save" disabled>Save as PDF</button>
+  </header>
+  <p class="state no-print" id="state" role="status" data-i18n="cat.loading">Preparing the catalogue…</p>
+  <main id="book"></main>
+  <script type="module" src="js/catalogue.js"></script>
+</body>
+</html>

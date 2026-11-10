@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RK FASHION — Raghad Khaled</title>
+  <meta name="description" content="RK FASHION — the fashion portfolio of Raghad Khaled. Browse the portfolio and send a request.">
+  <meta name="theme-color" content="#240810">
+  <meta property="og:title" content="RK FASHION — Raghad Khaled">
+  <meta property="og:description" content="The fashion portfolio of Raghad Khaled.">
+  <link rel="icon" type="image/png" href="assets/logo/favicon.png">
+  <link rel="apple-touch-icon" href="assets/logo/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Montserrat:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/book.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <script>
+    // Language + direction before first paint (no flash). Mirrors detectLang() in js/i18n.js.
+    (function () {
+      var l = "en";
+      try {
+        var q = new URLSearchParams(location.search).get("lang"), s = localStorage.getItem("rk:lang");
+        l = q === "ar" || q === "en" ? q : s === "ar" || s === "en" ? s : (navigator.language || "").toLowerCase().indexOf("ar") === 0 ? "ar" : "en";
+      } catch (e) {}
+      document.documentElement.lang = l; document.documentElement.dir = l === "ar" ? "rtl" : "ltr";
+    })();
+    // Enable the animated intro unless the visitor prefers reduced motion (main.js turns it off if GSAP fails).
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("anim");
+    // Failsafe: if the app script never starts (e.g. a CDN is blocked), drop the intro state so the page is still readable.
+    setTimeout(function () {
+      var c = document.documentElement.classList;
+      c.add("ready");
+      if (!window.__rkBooted) c.remove("anim");
+    }, 9000);
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
+
+  <!-- Preloader (only shown when animations are enabled) -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <img class="preloader__logo" src="assets/logo/rk-logo-360.png" alt="" width="360" height="360">
+  </div>
+
+  <!-- Living background -->
+  <canvas id="flow" class="flow" aria-hidden="true"></canvas>
+  <div class="flow-dim" id="flowDim" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor" id="cursor" aria-hidden="true"></div>
+  <canvas class="dust" id="dust" aria-hidden="true"></canvas>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <header class="site-header" id="siteHeader">
+    <a class="brand" href="#top" data-i18n-attr="aria-label:brand.home" aria-label="RK FASHION — back to top">
+      <img src="assets/logo/rk-logo-360.png" alt="RK" width="48" height="48">
+    </a>
+    <nav class="nav" id="nav" data-i18n-attr="aria-label:nav.main" aria-label="Main">
+      <a href="#about" data-i18n="nav.about">About</a>
+      <a href="#portfolio" data-i18n="nav.portfolio">Portfolio</a>
+      <a href="#services" data-i18n="nav.services" data-needs="services" hidden>Services</a>
+      <a href="#request" data-i18n="nav.request">Request</a>
+      <a href="#contact" data-i18n="nav.contact">Contact</a>
+    </nav>
+    <div class="header__end">
+      <button class="lang-btn" id="langBtn" type="button" lang="ar" data-i18n="lang.other" data-i18n-attr="aria-label:lang.label" aria-label="Switch to Arabic">العربية</button>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="menu" data-i18n-attr="aria-label:menu.open" aria-label="Open menu">
+        <span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="menu" id="menu" hidden>
+    <nav data-i18n-attr="aria-label:nav.mobile" aria-label="Mobile">
+      <a href="#about" data-i18n="nav.about">About</a>
+      <a href="#portfolio" data-i18n="nav.portfolio">Portfolio</a>
+      <a href="#services" data-i18n="nav.services" data-needs="services" hidden>Services</a>
+      <a href="#request" data-i18n="nav.request">Request</a>
+      <a href="#contact" data-i18n="nav.contact">Contact</a>
+    </nav>
+  </div>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" id="top">
+      <div class="hero__image" id="heroImage" aria-hidden="true"></div>
+      <div class="hero__inner">
+        <img class="hero__logo" id="heroLogo" src="assets/logo/rk-logo.png" alt="RK Fashion Designer logo" width="900" height="900" fetchpriority="high">
+        <h1 class="hero__title" id="heroTitle" aria-label="RK FASHION" lang="en" dir="ltr">RK FASHION</h1>
+        <p class="hero__name" id="heroName" data-i18n="hero.name">Raghad Khaled</p>
+        <p class="hero__intro" id="heroIntro" data-i18n="hero.intro">The fashion portfolio of Raghad Khaled.</p>
+        <div class="hero__cta">
+          <a class="btn btn--gold magnetic" href="#portfolio" data-i18n="hero.cta1">View Portfolio</a>
+          <a class="btn btn--ghost magnetic" href="#request" data-i18n="hero.cta2">Send a Request</a>
+          <a class="btn btn--text magnetic" href="#contact" data-i18n="hero.cta3">Contact Me</a>
+        </div>
+      </div>
+      <a class="hero__scroll" href="#about" data-i18n-attr="aria-label:hero.scroll" aria-label="Scroll to About"><span></span></a>
+    </section>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>RK FASHION</span><i></i><span>Raghad Khaled</span><i></i><span>RK FASHION</span><i></i><span>Raghad Khaled</span><i></i>
+        <span>RK FASHION</span><i></i><span>Raghad Khaled</span><i></i><span>RK FASHION</span><i></i><span>Raghad Khaled</span><i></i>
+      </div>
+    </div>
+
+    <!-- ABOUT / CV -->
+    <section class="section about" id="about" aria-labelledby="aboutTitle">
+      <div class="about__head">
+        <h2 class="section__title" id="aboutTitle" data-i18n="about.title">About</h2>
+        <figure class="portrait" id="portrait">
+          <img src="assets/images/raghad-700.jpg" srcset="assets/images/raghad-700.jpg 700w, assets/images/raghad.jpg 1100w" sizes="(max-width: 1024px) 80vw, 30vw" data-i18n-attr="alt:portrait.alt" alt="Portrait of Raghad Khaled" width="700" height="1244" loading="lazy" decoding="async">
+        </figure>
+      </div>
+      <div class="about__body" id="aboutBody">
+        <p class="about__empty" id="aboutEmpty" data-i18n="about.empty">The biography, CV and qualifications will appear here.</p>
+      </div>
+    </section>
+
+    <!-- PORTFOLIO -->
+    <section class="section portfolio" id="portfolio" aria-labelledby="portfolioTitle">
+      <div class="portfolio__head">
+        <h2 class="section__title" id="portfolioTitle" data-i18n="portfolio.title">Portfolio</h2>
+        <div class="portfolio__tools">
+          <div class="filters" id="filters" role="group" data-i18n-attr="aria-label:portfolio.filter" aria-label="Filter by category" hidden></div>
+          <div class="view-toggle" id="viewToggle" role="group" data-i18n-attr="aria-label:view.label" aria-label="Portfolio view" hidden>
+            <button type="button" id="viewBook" aria-pressed="true" data-i18n="view.book">Book</button>
+            <button type="button" id="viewGrid" aria-pressed="false" data-i18n="view.grid">Grid</button>
+          </div>
+        </div>
+      </div>
+      <p class="portfolio__state" id="galleryState" role="status" data-i18n="gallery.loading">Loading the portfolio…</p>
+      <div class="lookbook" id="lookbook"></div>
+      <ul class="grid" id="grid" hidden></ul>
+    </section>
+
+    <!-- SERVICES + PROCESS (hidden until the admin fills them in) -->
+    <section class="section services" id="services" aria-labelledby="servicesTitle" hidden>
+      <h2 class="section__title" id="servicesTitle" data-i18n="services.title">Services</h2>
+      <ul class="svc" id="svcList"></ul>
+      <p class="services__note" id="svcNote" hidden></p>
+      <div class="process" id="processWrap" hidden>
+        <h3 data-i18n="process.title">How it works</h3>
+        <ol class="steps" id="steps"></ol>
+      </div>
+    </section>
+
+    <!-- BEFORE & AFTER (hidden until filled) -->
+    <section class="section results" id="results" aria-labelledby="resultsTitle" hidden>
+      <h2 class="section__title" id="resultsTitle" data-i18n="results.title">Before &amp; after</h2>
+      <ul class="ba" id="baGrid"></ul>
+    </section>
+
+    <!-- CLIENT REVIEWS (hidden until filled) -->
+    <section class="section reviews" id="reviews" aria-labelledby="reviewsTitle" hidden>
+      <h2 class="section__title" id="reviewsTitle" data-i18n="reviews.title">Client reviews</h2>
+      <ul class="quotes" id="quoteList"></ul>
+    </section>
+
+    <!-- REQUEST -->
+    <section class="section request" id="request" aria-labelledby="requestTitle">
+      <div class="request__head">
+        <h2 class="section__title" id="requestTitle" data-i18n="request.title">Send a Request</h2>
+        <p class="request__lead" data-i18n="request.lead">Tell Raghad what you need. Every request is reviewed personally and you will be contacted using the details you leave.</p>
+      </div>
+
+      <form class="form" id="requestForm" novalidate>
+        <p class="ref field--wide" id="refChip" hidden>
+          <span id="refText"></span>
+          <button type="button" id="refClear" data-i18n-attr="aria-label:ref.remove" aria-label="Remove design reference"></button>
+        </p>
+        <div class="field">
+          <label for="fullName" data-i18n="form.name">Full name</label>
+          <input id="fullName" name="fullName" type="text" autocomplete="name" maxlength="80" required aria-describedby="fullName-err">
+          <p class="field__err" id="fullName-err" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="contactInfo" data-i18n="form.contact">Email or phone</label>
+          <input id="contactInfo" name="contactInfo" type="text" autocomplete="email" maxlength="120" dir="auto" required aria-describedby="contactInfo-err">
+          <p class="field__err" id="contactInfo-err" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="requestType" data-i18n="form.type">Type of request</label>
+          <select id="requestType" name="requestType" required aria-describedby="requestType-err"></select>
+          <p class="field__err" id="requestType-err" role="alert"></p>
+        </div>
+        <div class="field field--file">
+          <label for="attachment"><span data-i18n="form.attachment">Attachment</span> <span class="optional" data-i18n="form.attachmentHint">(optional — image or PDF, up to 5 MB)</span></label>
+          <input id="attachment" name="attachment" type="file" accept="image/jpeg,image/png,image/webp,image/avif,image/gif,application/pdf" aria-describedby="attachment-err">
+          <p class="field__err" id="attachment-err" role="alert"></p>
+        </div>
+        <div class="field field--wide">
+          <label for="description" data-i18n="form.details">Request details</label>
+          <textarea id="description" name="description" rows="6" maxlength="2000" dir="auto" required aria-describedby="description-err description-count"></textarea>
+          <p class="field__meta"><span class="field__err" id="description-err" role="alert"></span><span id="description-count" dir="ltr">0 / 2000</span></p>
+        </div>
+        <!-- Honeypot: real visitors never see or fill this -->
+        <div class="hp" aria-hidden="true"><label>Website <input type="text" id="website" name="website" tabindex="-1" autocomplete="off"></label></div>
+        <div class="form__actions field--wide">
+          <button class="btn btn--gold magnetic" type="submit" id="submitBtn"><span class="btn__label" data-i18n="form.send">Send request</span><span class="btn__spin" aria-hidden="true"></span></button>
+        </div>
+      </form>
+
+      <div class="success" id="success" hidden tabindex="-1">
+        <img class="success__logo" src="assets/logo/rk-logo-360.png" alt="" width="360" height="360">
+        <h3 data-i18n="success.title">Request received</h3>
+        <p data-i18n="success.text">Thank you. Your request is now pending review and you will be contacted using the details you provided.</p>
+        <p class="success__ref"><span data-i18n="success.ref">Reference:</span> <span id="successRef" dir="ltr"></span></p>
+        <button class="btn btn--ghost" type="button" id="again" data-i18n="success.again">Send another request</button>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section contact" id="contact" aria-labelledby="contactTitle">
+      <h2 class="section__title" id="contactTitle" data-i18n="contact.title">Contact</h2>
+      <ul class="contact__list" id="contactList">
+        <li class="contact__empty" data-i18n="contact.empty">Contact details will appear here.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span data-i18n="footer">© RK FASHION · Raghad Khaled</span>
+  </footer>
+
+  <!-- Floating WhatsApp button (shown only when a WhatsApp number is saved in the dashboard) -->
+  <a class="wa-fab" id="waFab" href="#" target="_blank" rel="noopener" hidden data-i18n-attr="aria-label:wa.aria" aria-label="Chat on WhatsApp"></a>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" data-i18n-attr="aria-label:lb.label" aria-label="Image viewer" hidden>
+    <button class="lightbox__btn lightbox__close" type="button" id="lbClose" data-i18n-attr="aria-label:lb.close" aria-label="Close"></button>
+    <button class="lightbox__btn lightbox__prev" type="button" id="lbPrev" data-i18n-attr="aria-label:lb.prev" aria-label="Previous image"></button>
+    <figure class="lightbox__fig">
+      <img id="lbImg" alt="">
+      <figcaption id="lbCap"></figcaption>
+      <button class="btn btn--gold lightbox__cta" type="button" id="lbRequest" data-i18n="lb.request">Request this design</button>
+    </figure>
+    <button class="lightbox__btn lightbox__next" type="button" id="lbNext" data-i18n-attr="aria-label:lb.next" aria-label="Next image"></button>
+  </div>
+
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

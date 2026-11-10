@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#240810">
+  <title>Dashboard — RK FASHION</title>
+  <link rel="icon" type="image/png" href="assets/logo/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Montserrat:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="is-checking">
+  <!-- Nothing admin-related is shown until Firebase confirms the signed-in user is an authorised admin -->
+  <div class="gate" id="gate">
+    <p id="gateMsg">Checking access…</p>
+  </div>
+
+  <!-- Sign in -->
+  <main class="login" id="login" hidden>
+    <form class="login__card" id="loginForm" novalidate>
+      <img class="login__logo" src="assets/logo/rk-logo-360.png" alt="RK" width="120" height="120">
+      <h1>RK FASHION</h1>
+      <p class="muted">Administrator sign-in</p>
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <p class="form-error" id="loginError" role="alert"></p>
+      <button class="btn btn--gold" type="submit" id="loginBtn">Sign in</button>
+      <button class="link" type="button" id="forgot">Send me a password reset email</button>
+      <a class="link" href="index.html">Back to the website</a>
+    </form>
+  </main>
+
+  <!-- Dashboard -->
+  <div class="app" id="app" hidden>
+    <aside class="side" id="side">
+      <div class="side__brand">RK FASHION<small>Dashboard</small></div>
+      <nav class="side__nav" id="tabs" aria-label="Dashboard sections">
+        <button type="button" data-view="overview" aria-current="page">Overview</button>
+        <button type="button" data-view="requests">Requests <span class="pill" id="pendingPill" hidden>0</span></button>
+        <button type="button" data-view="gallery">Gallery</button>
+        <button type="button" data-view="extras">Services &amp; reviews</button>
+        <button type="button" data-view="content">About &amp; CV</button>
+        <button type="button" data-view="contact">Contact &amp; social</button>
+      </nav>
+      <div class="side__foot">
+        <span id="who" class="muted"></span>
+        <a class="link" href="index.html" target="_blank" rel="noopener">View website</a>
+        <button class="btn btn--ghost" type="button" id="logout">Sign out</button>
+      </div>
+    </aside>
+
+    <main class="main" id="main">
+      <!-- OVERVIEW -->
+      <section class="view" id="view-overview" aria-labelledby="t-overview">
+        <h2 id="t-overview">Overview</h2>
+        <div class="stats" id="stats">
+          <div class="stat"><span class="stat__n" id="sTotal">–</span><span>Total requests</span></div>
+          <div class="stat"><span class="stat__n" id="sPending">–</span><span>Pending</span></div>
+          <div class="stat"><span class="stat__n" id="sApproved">–</span><span>Approved</span></div>
+          <div class="stat"><span class="stat__n" id="sRejected">–</span><span>Rejected</span></div>
+          <div class="stat"><span class="stat__n" id="sGallery">–</span><span>Gallery images <small id="sPublished"></small></span></div>
+        </div>
+        <h3>Latest requests</h3>
+        <ul class="latest" id="latest"></ul>
+      </section>
+
+      <!-- REQUESTS -->
+      <section class="view" id="view-requests" hidden aria-labelledby="t-requests">
+        <h2 id="t-requests">Requests</h2>
+        <div class="toolbar">
+          <label class="sr" for="reqSearch">Search requests</label>
+          <input id="reqSearch" type="search" placeholder="Search name, contact, type or details">
+          <label class="sr" for="reqStatus">Filter by status</label>
+          <select id="reqStatus">
+            <option value="">All statuses</option><option>Pending</option><option>Approved</option><option>Rejected</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table class="table">
+            <thead><tr><th>Received</th><th>Name</th><th>Type</th><th>Contact</th><th>Status</th><th><span class="sr">Open</span></th></tr></thead>
+            <tbody id="reqRows"></tbody>
+          </table>
+        </div>
+        <p class="empty" id="reqEmpty" hidden>No requests match.</p>
+      </section>
+
+      <!-- GALLERY -->
+      <section class="view" id="view-gallery" hidden aria-labelledby="t-gallery">
+        <h2 id="t-gallery">Gallery</h2>
+        <form class="panel" id="uploadForm" novalidate>
+          <h3>Upload an image</h3>
+          <div class="cols">
+            <div><label for="gFile">Image (JPG, PNG, WebP, AVIF, GIF — up to 10 MB)</label><input id="gFile" type="file" accept="image/jpeg,image/png,image/webp,image/avif,image/gif" required></div>
+            <div><label for="gTitle">Title</label><input id="gTitle" type="text" maxlength="120" required></div>
+            <div><label for="gCategory">Category</label><input id="gCategory" type="text" maxlength="40" list="catList" placeholder="e.g. Evening wear"></div>
+            <div class="check"><label><input id="gPublish" type="checkbox" checked> Publish immediately</label></div>
+          </div>
+          <label for="gDesc">Description</label>
+          <textarea id="gDesc" rows="2" maxlength="600"></textarea>
+          <details class="ar-box"><summary>Arabic version (optional)</summary>
+            <div class="cols">
+              <div><label for="gTitleAr">Title (Arabic)</label><input id="gTitleAr" type="text" dir="rtl" maxlength="120"></div>
+              <div><label for="gCategoryAr">Category (Arabic)</label><input id="gCategoryAr" type="text" dir="rtl" maxlength="40"></div>
+            </div>
+            <label for="gDescAr">Description (Arabic)</label>
+            <textarea id="gDescAr" rows="2" dir="rtl" maxlength="600"></textarea>
+          </details>
+          <div class="progress" id="gProgress" hidden><span></span></div>
+          <p class="form-error" id="uploadError" role="alert"></p>
+          <button class="btn btn--gold" type="submit" id="uploadBtn">Upload to gallery</button>
+        </form>
+        <datalist id="catList"></datalist>
+        <ul class="gal" id="galGrid"></ul>
+        <p class="empty" id="galEmpty" hidden>No images yet. Upload the first one above.</p>
+      </section>
+
+      <!-- ABOUT & CV -->
+      <section class="view" id="view-content" hidden aria-labelledby="t-content">
+        <h2 id="t-content">About &amp; CV</h2>
+        <form class="panel" id="contentForm" novalidate>
+          <label for="heroIntro">Hero introduction</label>
+          <textarea id="heroIntro" rows="2" maxlength="300"></textarea>
+          <label for="heroIntroAr">Hero introduction <span class="muted">(Arabic, optional)</span></label>
+          <textarea id="heroIntroAr" rows="2" dir="rtl" maxlength="300"></textarea>
+          <label>Hero background image <span class="muted">(optional, blended with the colour field)</span></label>
+          <div class="inline">
+            <input id="heroFile" type="file" accept="image/jpeg,image/png,image/webp,image/avif">
+            <button class="btn btn--ghost" type="button" id="heroClear">Remove image</button>
+            <span class="muted" id="heroState"></span>
+          </div>
+          <label for="bio">Professional biography</label>
+          <textarea id="bio" rows="7" maxlength="4000"></textarea>
+          <label for="bioAr">Professional biography <span class="muted">(Arabic, optional)</span></label>
+          <textarea id="bioAr" rows="7" dir="rtl" maxlength="4000"></textarea>
+          <div id="rep-education"></div>
+          <div id="rep-experience"></div>
+          <label for="skills">Skills and specialties <span class="muted">(separate with commas)</span></label>
+          <textarea id="skills" rows="2" maxlength="1000"></textarea>
+          <label for="skillsAr">Skills and specialties <span class="muted">(Arabic, separate with commas — optional)</span></label>
+          <textarea id="skillsAr" rows="2" dir="rtl" maxlength="1000"></textarea>
+          <div id="rep-achievements"></div>
+          <div id="rep-personal"></div>
+          <label>Downloadable CV</label>
+          <div class="inline">
+            <input id="cvFile" type="file" accept="application/pdf,image/jpeg,image/png">
+            <input id="cvUrl" type="url" placeholder="…or paste a link (https://)" aria-label="CV link">
+            <span class="muted" id="cvState"></span>
+          </div>
+          <p class="form-error" id="contentError" role="alert"></p>
+          <button class="btn btn--gold" type="submit" id="contentBtn">Save changes</button>
+        </form>
+      </section>
+
+      <!-- CONTACT -->
+      <section class="view" id="view-contact" hidden aria-labelledby="t-contact">
+        <h2 id="t-contact">Contact &amp; social</h2>
+        <form class="panel" id="contactForm" novalidate>
+          <div class="cols">
+            <div><label for="cEmail">Email</label><input id="cEmail" type="email" maxlength="120"></div>
+            <div><label for="cPhone">Phone</label><input id="cPhone" type="tel" maxlength="40"></div>
+            <div><label for="cWhats">WhatsApp number <span class="muted">(country code first, no leading 0 — e.g. 20… for Egypt)</span></label><input id="cWhats" type="tel" maxlength="40"></div>
+            <div><label for="cInsta">Instagram <span class="muted">(@handle or link)</span></label><input id="cInsta" type="text" maxlength="120"></div>
+          </div>
+          <div id="rep-links"></div>
+          <p class="form-error" id="contactError" role="alert"></p>
+          <button class="btn btn--gold" type="submit" id="contactBtn">Save changes</button>
+        </form>
+      </section>
+      <!-- SERVICES, REVIEWS, BEFORE & AFTER -->
+      <section class="view" id="view-extras" hidden aria-labelledby="t-extras">
+        <h2 id="t-extras">Services &amp; reviews</h2>
+        <p class="muted hint">Each section appears on the website only after you add at least one entry. Arabic fields are optional: if empty, the English text is shown to Arabic visitors.</p>
+        <form class="panel" id="extrasForm" novalidate>
+          <div id="rep-services"></div>
+          <label for="svcNoteIn">Note under the services <span class="muted">(optional, e.g. delivery time or payment terms)</span></label>
+          <textarea id="svcNoteIn" rows="2" maxlength="400"></textarea>
+          <label for="svcNoteAr">Note (Arabic)</label>
+          <textarea id="svcNoteAr" rows="2" dir="rtl" maxlength="400"></textarea>
+          <div id="rep-steps"></div>
+          <div id="rep-quotes"></div>
+          <div id="rep-ba"></div>
+          <p class="form-error" id="extrasError" role="alert"></p>
+          <button class="btn btn--gold" type="submit" id="extrasBtn">Save changes</button>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <!-- Request detail -->
+  <dialog class="modal" id="reqModal" aria-labelledby="rmTitle">
+    <form method="dialog" class="modal__close"><button class="icon-btn" aria-label="Close"></button></form>
+    <h3 id="rmTitle">Request</h3>
+    <dl class="facts" id="rmFacts"></dl>
+    <div class="seg" role="group" aria-label="Request status" id="rmStatus"></div>
+    <label for="rmNotes">Internal notes <span class="muted">(private — never shown to visitors)</span></label>
+    <textarea id="rmNotes" rows="4" maxlength="3000"></textarea>
+    <div class="modal__actions">
+      <button class="btn btn--gold" type="button" id="rmSave">Save notes</button>
+      <button class="btn btn--danger" type="button" id="rmDelete">Delete request</button>
+    </div>
+  </dialog>
+
+  <!-- Gallery edit -->
+  <dialog class="modal" id="galModal" aria-labelledby="gmTitle">
+    <form method="dialog" class="modal__close"><button class="icon-btn" aria-label="Close"></button></form>
+    <h3 id="gmTitle">Edit image</h3>
+    <img id="gmPreview" class="preview" alt="">
+    <label for="gmTitleIn">Title</label><input id="gmTitleIn" type="text" maxlength="120">
+    <label for="gmCat">Category</label><input id="gmCat" type="text" maxlength="40" list="catList">
+    <label for="gmDesc">Description</label><textarea id="gmDesc" rows="3" maxlength="600"></textarea>
+    <details class="ar-box"><summary>Arabic version (optional)</summary>
+      <label for="gmTitleAr">Title (Arabic)</label><input id="gmTitleAr" type="text" dir="rtl" maxlength="120">
+      <label for="gmCatAr">Category (Arabic)</label><input id="gmCatAr" type="text" dir="rtl" maxlength="40">
+      <label for="gmDescAr">Description (Arabic)</label><textarea id="gmDescAr" rows="3" dir="rtl" maxlength="600"></textarea>
+    </details>
+    <div class="check"><label><input id="gmPub" type="checkbox"> Published (visible on the website)</label></div>
+    <p class="form-error" id="gmError" role="alert"></p>
+    <div class="modal__actions"><button class="btn btn--gold" type="button" id="gmSave">Save image</button></div>
+  </dialog>
+
+  <!-- Confirm -->
+  <dialog class="modal modal--small" id="confirm" aria-labelledby="cfTitle">
+    <h3 id="cfTitle">Are you sure?</h3>
+    <p id="cfMsg"></p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" type="button" id="cfNo">Cancel</button>
+      <button class="btn btn--danger" type="button" id="cfYes">Delete</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>

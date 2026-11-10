@@ -1,0 +1,98 @@
+rules_version = '2';
+
+// RK FASHION — Firestore security rules.
+// Admin = a document exists at admins/{uid}. Create that document by hand in the Firebase
+// console (or Admin SDK); clients can never write to `admins`, so it cannot be self-granted.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    function str(v, min, max) { return v is string && v.size() >= min && v.size() <= max; }
+    function cloudinaryUrl(v) {
+      return v is string && v.size() <= 600 && v.matches('^https://res\\.cloudinary\\.com/fkmbapdm/.*');
+    }
+
+    // ---- admins: a signed-in user may only check their own record; nobody can write ----
+    match /admins/{uid} {
+      allow get: if signedIn() && request.auth.uid == uid;
+      allow list, create, update, delete: if false;
+    }
+
+    // ---- requests ----
+    function validNewRequest(d) {
+      return d.keys().hasOnly(['fullName', 'contactInfo', 'requestType', 'description', 'attachmentUrl', 'status', 'adminNotes', 'createdAt', 'updatedAt'])
+        && d.keys().hasAll(['fullName', 'contactInfo', 'requestType', 'description', 'attachmentUrl', 'status', 'adminNotes', 'createdAt', 'updatedAt'])
+        && str(d.fullName, 2, 80)
+        && str(d.contactInfo, 3, 120)
+        && d.requestType in ['Custom design', 'Styling consultation', 'Collaboration', 'Alterations', 'Other']
+        && str(d.description, 10, 2000)
+        && (d.attachmentUrl == '' || cloudinaryUrl(d.attachmentUrl))
+        && d.status == 'Pending'
+        && d.adminNotes == ''
+        && d.createdAt == request.time
+        && d.updatedAt == request.time;
+    }
+
+    match /requests/{requestId} {
+      // Anyone can submit a well-formed request. They can never read, change or delete one.
+      allow create: if requestId.matches('^[A-Za-z0-9]{10,64}$') && validNewRequest(request.resource.data);
+      allow get, list, delete: if isAdmin();
+      // Admins may change only status, internal notes and the update time.
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'adminNotes', 'updatedAt'])
+        && request.resource.data.status in ['Pending', 'Approved', 'Rejected']
+        && str(request.resource.data.adminNotes, 0, 3000)
+        && request.resource.data.updatedAt == request.time;
+    }
+
+    // ---- gallery ----
+    function validGallery(d) {
+      return d.keys().hasAll(['title', 'description', 'category', 'imageUrl', 'cloudinaryPublicId', 'isPublished', 'createdAt', 'updatedAt'])
+        && d.keys().hasOnly(['title', 'description', 'category', 'imageUrl', 'cloudinaryPublicId', 'isPublished', 'createdAt', 'updatedAt', 'width', 'height', 'titleAr', 'descriptionAr', 'categoryAr'])
+        && str(d.title, 1, 120)
+        && (!('titleAr' in d) || str(d.titleAr, 0, 120))
+        && (!('descriptionAr' in d) || str(d.descriptionAr, 0, 600))
+        && (!('categoryAr' in d) || str(d.categoryAr, 0, 40))
+        && str(d.description, 0, 600)
+        && str(d.category, 1, 40)
+        && cloudinaryUrl(d.imageUrl)
+        && str(d.cloudinaryPublicId, 1, 300)
+        && d.isPublished is bool
+        && d.updatedAt == request.time
+        && (!('width' in d) || (d.width is int && d.width > 0 && d.width < 20000))
+        && (!('height' in d) || (d.height is int && d.height > 0 && d.height < 20000));
+    }
+
+    match /gallery/{imageId} {
+      // Visitors only ever see published images (queries must filter on isPublished == true).
+      allow get, list: if resource.data.isPublished == true || isAdmin();
+      allow create: if isAdmin() && validGallery(request.resource.data) && request.resource.data.createdAt == request.time;
+      allow update: if isAdmin() && validGallery(request.resource.data) && request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isAdmin();
+    }
+
+    // ---- editable site content (About/CV, hero, contact + social) ----
+    match /settings/{docId} {
+      allow get: if docId == 'site';
+      allow list: if false;
+      allow create, update: if isAdmin() && docId == 'site'
+        && request.resource.data.keys().hasOnly(['hero', 'about', 'contact', 'services', 'testimonials', 'beforeAfter', 'updatedAt'])
+        && request.resource.data.hero is map
+        && request.resource.data.about is map
+        && request.resource.data.contact is map
+        && (!('services' in request.resource.data) || request.resource.data.services is map)
+        && (!('testimonials' in request.resource.data) || request.resource.data.testimonials is map)
+        && (!('beforeAfter' in request.resource.data) || request.resource.data.beforeAfter is map)
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if isAdmin();
+    }
+
+    // Everything else is closed.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

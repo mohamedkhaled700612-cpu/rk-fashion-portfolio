@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /admin.html
-Disallow: /catalogue.html
-Sitemap: https://rk-portfolio-eb485.web.app/sitemap.xml
